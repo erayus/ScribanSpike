@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Scriban;
+using Stubble.Core.Builders;
 
 namespace ScribanSpike
 {
@@ -13,14 +13,15 @@ namespace ScribanSpike
 					<th>Name</th>
 					<th>Level</th>
 				</tr>
-				{{ for capability in _pd.CapabilityGroup.Capabilities}}
+				{{ #Capabilities }}
 					<tr>
-						<td>{{capability.CapabilityName}}</td>
-						<td>{{capability.RequirementLevel}}</td>
+						<td>{{ CapabilityName }}</td>
+						<td>{{ RequirementLevel }}</td>
 					</tr>
-				{{ end }}
+				{{ /Capabilities }}
 			</table>
 			";
+	        
 	        var localPd = new PD
 	        {
 		        CapabilityGroup = new CapabilityGroup
@@ -32,8 +33,10 @@ namespace ScribanSpike
 			        }
 		        }
 	        };
-	        var template = Template.Parse(templateText);
-            var result = template.Render(new { _pd = localPd});
+	        
+	        var stubble = new StubbleBuilder().Build();
+	        var result = stubble.Render(templateText, localPd.CapabilityGroup);
+	        
             Console.WriteLine(result);
         }
     }
