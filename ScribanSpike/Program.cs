@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Newtonsoft.Json.Linq;
 using Stubble.Core.Builders;
 
@@ -9,35 +10,7 @@ namespace ScribanSpike
 	{
 		static void Main(string[] args)
 		{
-			var templateText = @"
-		        <table>
-					<tr>
-						<th>{{TableName}}</th>
-						<th>{{TableLevel}}</th>
-					</tr>
-					{{ #CapabilityGroup.Capabilities }}
-						<tr>
-							<td>{{ CapabilityName }}</td>
-							<td>{{ RequirementLevel }}</td>
-						</tr>
-					{{ /CapabilityGroup.Capabilities }}
-				</table>
-			<hr/>
-			 <table>
-				{{CapabilityGroupList}}
-				<tr>
-					<th>Name</th>
-					<th>Level</th>
-				</tr>
-				{{ #CapabilityGroup2.Capabilities }}
-					<tr>
-						<td>{{ CapabilityName }}</td>
-						<td>{{ RequirementLevel }}</td>
-					</tr>
-				{{ /CapabilityGroup2.Capabilities }}
-			</table>";
-
-			var flexibleData = @"";
+			var templateText = Helper.GetTemplate();
 			
 			var publicPD = new PublicPositionDescription
 			{
@@ -47,14 +20,18 @@ namespace ScribanSpike
 				PositionIds = new List<string> { "195182", "195897" },
 				PositionDescriptionUrl = "www.google.com",
 				ProviderId = 10279,
-				FlexibleData = {},
+				FlexibleData = getFlexibleData(),
 				RequestId = new Guid("b61e3e2f-22b9-4b7b-9f20-2c083fc75f57")
 			};
 
 			var stubble = new StubbleBuilder().Build();
-			var result = stubble.Render(templateText, publicPD);
+			var result = stubble.Render(templateText, publicPD.FlexibleData);
 
 			Console.WriteLine(result);
+		}
+		static JObject getFlexibleData() {
+			var json = "{ \"posGroup\": { \"posDetails\": [{ \"id\": \"15508d98-9430-6c19-21fe-df79910c5ff6\", \"title\": \"Receptionist\", \"externalId\": \"185522\", \"viewableReference\": \"B39855\", \"positionProperties\": { \"fte\": \"Temporary\", \"seniority\": \"Entry Level\", \"brand Name\": \"Abc corp\", \"department Name\": \"Product\" } }] }, \"dutiesGroup\": { \"duties\": [{ \"dutyType\": \"Essential\", \"dutyDescription\": \"some duty\", \"percentageAllocation\": 25 }, { \"dutyType\": \"Essential\", \"dutyDescription\": \"some duty\", \"percentageAllocation\": 25 }] }, \"capabilityGroup\": { \"capabilities\": [{ \"capabilityName\": \"Software\", \"requirementLevel\": \"Mandatory\" }] }, \"physicalDemands\": { \"physicalOption\": false }, \"positionDetails\": { \"salary\": 100000, \"classification\": \"Professional\", \"skillsKnowledge\": \"skills\" }, \"backgroundChecks\": { }, \"fundingSourcesGroup\": { \"fundingSources\": [{ \"glNumber\": \"10-00-7-15000-6210\", \"percentageDistribution\": 25 }] }, \"decisionMakingSection\": { } }";
+			return JObject.Parse(json);
 		}
 	}
 
@@ -76,4 +53,6 @@ namespace ScribanSpike
         
 		public Guid? RequestId { get; set; }
 	}
+	
+	
 }
