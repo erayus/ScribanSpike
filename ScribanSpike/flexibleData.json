@@ -1,0 +1,58 @@
+{
+  "posGroup": {
+    "posDetails": [
+      {
+        "id": "15508d98-9430-6c19-21fe-df79910c5ff6",
+        "title": "Receptionist",
+        "externalId": "185522",
+        "viewableReference": "B39855",
+        "positionProperties": {
+          "fte": "Temporary",
+          "seniority": "Entry Level",
+          "brand Name": "Abc corp",
+          "department Name": "Product"
+        }
+      }
+    ]
+  },
+  "dutiesGroup": {
+    "duties": [
+      {
+        "dutyType": "Essential",
+        "dutyDescription": "some duty",
+        "percentageAllocation": 25
+      },
+      {
+        "dutyType": "Essential",
+        "dutyDescription": "some other duty",
+        "percentageAllocation": 30
+      }
+    ]
+  },
+  "capabilityGroup": {
+    "capabilities": [
+      {
+        "capabilityName": "Software",
+        "requirementLevel": "Mandatory"
+      }
+    ]
+  },
+  "physicalDemands": {
+    "physicalOption": false
+  },
+  "positionDetails": {
+    "salary": 100000,
+    "classification": "Professional",
+    "skillsKnowledge": "skills"
+  },
+  "backgroundChecks": {},
+  "fundingSourcesGroup": {
+    "fundingSources": [
+      {
+        "glNumber": "10-00-7-15000-6210",
+        "percentageDistribution": 25
+      }
+    ]
+  },
+  "decisionMakingSection": {}
+}

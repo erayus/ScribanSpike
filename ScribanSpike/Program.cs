@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+using System.IO;
 using Newtonsoft.Json.Linq;
 using Stubble.Core.Builders;
 
@@ -23,14 +23,27 @@ namespace ScribanSpike
 				FlexibleData = getFlexibleData(),
 				RequestId = new Guid("b61e3e2f-22b9-4b7b-9f20-2c083fc75f57")
 			};
-
+			
+			// Create StubblePDModel based on the public PD.
+			// - Navigate through the whole PD object tree
+			// StubblePDModel properties, including Flexible Data properties, should be string or number.
+			// - Before assigning each value to the StubblePDModel, convert to string or number accordingly.
+			// Pass StubblePDModel into the engine.
+			// =================or==================
+			// Try serializing the whole thing before passing-in
+			
 			var stubble = new StubbleBuilder().Build();
-			var result = stubble.Render(templateText, publicPD.FlexibleData);
+			var result = stubble.Render(
+				templateText,
+				publicPD
+			);
 
 			Console.WriteLine(result);
 		}
-		static JObject getFlexibleData() {
-			var json = "{ \"posGroup\": { \"posDetails\": [{ \"id\": \"15508d98-9430-6c19-21fe-df79910c5ff6\", \"title\": \"Receptionist\", \"externalId\": \"185522\", \"viewableReference\": \"B39855\", \"positionProperties\": { \"fte\": \"Temporary\", \"seniority\": \"Entry Level\", \"brand Name\": \"Abc corp\", \"department Name\": \"Product\" } }] }, \"dutiesGroup\": { \"duties\": [{ \"dutyType\": \"Essential\", \"dutyDescription\": \"some duty\", \"percentageAllocation\": 25 }, { \"dutyType\": \"Essential\", \"dutyDescription\": \"some duty\", \"percentageAllocation\": 25 }] }, \"capabilityGroup\": { \"capabilities\": [{ \"capabilityName\": \"Software\", \"requirementLevel\": \"Mandatory\" }] }, \"physicalDemands\": { \"physicalOption\": false }, \"positionDetails\": { \"salary\": 100000, \"classification\": \"Professional\", \"skillsKnowledge\": \"skills\" }, \"backgroundChecks\": { }, \"fundingSourcesGroup\": { \"fundingSources\": [{ \"glNumber\": \"10-00-7-15000-6210\", \"percentageDistribution\": 25 }] }, \"decisionMakingSection\": { } }";
+		static JObject getFlexibleData()
+		{
+			var json = File.ReadAllText(@"C:\code\ScribanSpike\ScribanSpike\flexibleData.json");
+			// var json = "{ \"posGroup\": { \"posDetails\": [{ \"id\": \"15508d98-9430-6c19-21fe-df79910c5ff6\", \"title\": \"Receptionist\", \"externalId\": \"185522\", \"viewableReference\": \"B39855\", \"positionProperties\": { \"fte\": \"Temporary\", \"seniority\": \"Entry Level\", \"brand Name\": \"Abc corp\", \"department Name\": \"Product\" } }] }, \"dutiesGroup\": { \"duties\": [{ \"dutyType\": \"Essential\", \"dutyDescription\": \"some duty\", \"percentageAllocation\": 25 }, { \"dutyType\": \"Essential\", \"dutyDescription\": \"some duty\", \"percentageAllocation\": 25 }] }, \"capabilityGroup\": { \"capabilities\": [{ \"capabilityName\": \"Software\", \"requirementLevel\": \"Mandatory\" }] }, \"physicalDemands\": { \"physicalOption\": false }, \"positionDetails\": { \"salary\": 100000, \"classification\": \"Professional\", \"skillsKnowledge\": \"skills\" }, \"backgroundChecks\": { }, \"fundingSourcesGroup\": { \"fundingSources\": [{ \"glNumber\": \"10-00-7-15000-6210\", \"percentageDistribution\": 25 }] }, \"decisionMakingSection\": { } }";
 			return JObject.Parse(json);
 		}
 	}

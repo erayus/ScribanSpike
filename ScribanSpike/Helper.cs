@@ -13,7 +13,9 @@
               <strong>Site:</strong>{lSiteID}
             </p>
 
-            {{ #posGroup.posDetails }}
+            <h2 dir='ltr'>Position Description Title: {{ PositionDescriptionTitle }}</h2>
+            <h2 dir='ltr'>Version Number: {{ VersionNumber }}</h2>
+            {{ #FlexibleData.posGroup.posDetails }}
               <h2 dir='ltr'>Position:</h2>
               <ul>
                 <li><strong>Title: </strong> {{title}}</li>
@@ -22,10 +24,33 @@
                 <li><strong>Brand Name: </strong>{{ positionProperties.brand Name }}</li>
                 <li><strong>Department Name: </strong>{{ positionProperties.department Name }}</li>
               </ul>
-            {{ /posGroup.posDetails }}
-            
-    
-
+            {{ /FlexibleData.posGroup.posDetails }}
+            {{ #FlexibleData.dutiesGroup.duties }}
+              <h2 dir='ltr'>Duty:</h2>
+              <ul>
+                <li><strong>Type: </strong> {{dutyType}}</li>
+                <li><strong>Description: </strong>{{dutyDescription}}</li>
+                <li><strong>Percentage Allocation: </strong>{{percentageAllocation}}</li>
+              </ul>
+            {{ /FlexibleData.dutiesGroup.duties }}
+            {{ #FlexibleData.capabilityGroup.capabilities }}
+              <h2 dir='ltr'>Capability:</h2>
+              <ul>
+                <li><strong>Name: </strong> {{capabilityName}}</li>
+                <li><strong>Requirement Level: </strong>{{requirementLevel}}</li>
+              </ul>
+            {{ /FlexibleData.capabilityGroup.capabilities }}
+            {{ #FlexibleData.fundingSourcesGroup.fundingSources }}
+              <h2 dir='ltr'>Funding Source:</h2>
+              <ul>
+                <li><strong>GL Number: </strong> {{glNumber}}</li>
+                <li><strong>Percentage Distribution: </strong>{{percentageDistribution}}</li>
+              </ul>
+            {{ /FlexibleData.fundingSourcesGroup.fundingSources }}
+            <h2 dir='ltr'>Physical Demands:</h2>
+            <p dir='ltr'>
+              <strong>Physical Option:</strong> {{ FlexibleData.PhysicalDemands.physicalOption }}<br />
+            </p>
 
             <h3 dir='ltr'>Payment Information</h3>
             <p dir='ltr'>
