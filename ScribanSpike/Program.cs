@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 using Stubble.Core.Builders;
 
@@ -20,7 +21,7 @@ namespace ScribanSpike
 				PositionIds = new List<string> { "195182", "195897" },
 				PositionDescriptionUrl = "www.google.com",
 				ProviderId = 10279,
-				FlexibleData = getFlexibleData(),
+				FlexibleData = getFlexibleData(), // Transform(getFlexibleData()),
 				RequestId = new Guid("b61e3e2f-22b9-4b7b-9f20-2c083fc75f57")
 			};
 			
@@ -37,14 +38,53 @@ namespace ScribanSpike
 				templateText,
 				publicPD
 			);
-
+			
 			Console.WriteLine(result);
 		}
+		
 		static JObject getFlexibleData()
 		{
 			var json = File.ReadAllText(@"C:\code\ScribanSpike\ScribanSpike\flexibleData.json");
 			// var json = "{ \"posGroup\": { \"posDetails\": [{ \"id\": \"15508d98-9430-6c19-21fe-df79910c5ff6\", \"title\": \"Receptionist\", \"externalId\": \"185522\", \"viewableReference\": \"B39855\", \"positionProperties\": { \"fte\": \"Temporary\", \"seniority\": \"Entry Level\", \"brand Name\": \"Abc corp\", \"department Name\": \"Product\" } }] }, \"dutiesGroup\": { \"duties\": [{ \"dutyType\": \"Essential\", \"dutyDescription\": \"some duty\", \"percentageAllocation\": 25 }, { \"dutyType\": \"Essential\", \"dutyDescription\": \"some duty\", \"percentageAllocation\": 25 }] }, \"capabilityGroup\": { \"capabilities\": [{ \"capabilityName\": \"Software\", \"requirementLevel\": \"Mandatory\" }] }, \"physicalDemands\": { \"physicalOption\": false }, \"positionDetails\": { \"salary\": 100000, \"classification\": \"Professional\", \"skillsKnowledge\": \"skills\" }, \"backgroundChecks\": { }, \"fundingSourcesGroup\": { \"fundingSources\": [{ \"glNumber\": \"10-00-7-15000-6210\", \"percentageDistribution\": 25 }] }, \"decisionMakingSection\": { } }";
 			return JObject.Parse(json);
+		}
+		
+		static JObject Transform(JObject targetObject)
+		{
+			JObject resultObject = new JObject();
+			var jProperties = targetObject.Properties().ToList();
+			foreach (var jProperty in jProperties)
+			{
+				if (jProperty.Value.Type == JTokenType.Array)
+				{
+					resultObject[jProperty.Name] = ProcessArray((JArray)jProperty.Value);
+				}
+				else if (jProperty.Value.Type == JTokenType.Object)
+				{
+					resultObject[jProperty.Name] = Transform((JObject)jProperty.Value);
+				}
+				else
+				{
+					resultObject[jProperty.Name] = jProperty.Value;
+					if (jProperty.Value.Type == JTokenType.Boolean)
+					{
+						resultObject[jProperty.Name] = jProperty.Value.ToString();
+					}
+				}
+			}
+
+			return resultObject;
+		}
+		
+		static JArray ProcessArray(JArray jArray)
+		{
+			var newArray = new JArray();
+			foreach(var jToken in jArray.Where(x => x.Type == JTokenType.Object))
+			{
+				newArray.Add(Transform((JObject)jToken));
+			}
+
+			return newArray;
 		}
 	}
 
@@ -66,6 +106,4 @@ namespace ScribanSpike
         
 		public Guid? RequestId { get; set; }
 	}
-	
-	
 }

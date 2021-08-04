@@ -49,7 +49,7 @@
             {{ /FlexibleData.fundingSourcesGroup.fundingSources }}
             <h2 dir='ltr'>Physical Demands:</h2>
             <p dir='ltr'>
-              <strong>Physical Option:</strong> {{ FlexibleData.PhysicalDemands.physicalOption }}<br />
+              <strong>Physical Option:</strong> {{ FlexibleData.physicalDemands.physicalOption }}<br />
             </p>
 
             <h3 dir='ltr'>Payment Information</h3>
