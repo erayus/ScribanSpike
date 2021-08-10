@@ -27,40 +27,26 @@ namespace ScribanSpike
 			};
 			var publicPDJObject = JObject.Parse(JsonConvert.SerializeObject(publicPD));
 			
-			// Get a list of template tokens
-			string pattern = @"(?<={{)(?:.*?)(?=}})";//@"(?<={{)\s?#?\/?\s?(.*?)\s?(?=}})";
+			//Pre-process
+			//Match everything between double curly braces
+			string pattern = @"(?<={{|{{ |{{ [#\/])(?:[a-zA-Z]*?)(?=}}| }})";//@"(?<={{)\s?#?\/?\s?(.*?)\s?(?=}})";
 			Regex rgx = new Regex(pattern);
 			var templateText = Helper.GetTemplate();
 			
 			// Loop through each token
 			foreach (Match matchToken in rgx.Matches(templateText))
 			{
-
-				var givenToken =  matchToken.Value.Trim(new Char[] {' ','#', '/', ' '});
+				var givenToken =  matchToken.Value;
 				// Console.WriteLine(givenToken);
 
-				var fullPathTokenList = publicPDJObject.FindTokens(givenToken);
+				var fullTokenPathList = publicPDJObject.FindTokens(givenToken);
 				
-				if (fullPathTokenList.Count > 1)
+				if (fullTokenPathList.Count > 1)
 				{
 					Console.WriteLine("Not yet consider");
 				}
-				var fullTokenPath = fullPathTokenList[0].Path;
-				templateText = Regex.Replace(templateText, @"(?<={{)\s?#?\/?\s?("+ givenToken + @")\s?(?=}})", 
-					m =>
-					{
-						if (m.Value.Contains('#'))
-						{
-							return $"#{fullTokenPath}";
-						} 
-						if (m.Value.Contains('/'))
-						{
-							return $"/{fullTokenPath}";
-						}
-
-						return fullTokenPath;
-
-					});
+				var fullTokenPath = fullTokenPathList[0].Path;
+				templateText = Regex.Replace(templateText, @"(?<={{|{{ |{{ [#\/])(?:"+ givenToken + @")(?=}}| }})",fullTokenPath);
 				templateText = Regex.Replace(templateText, @"~!", "{{");
 				templateText = Regex.Replace(templateText, @"!~", "}}");
 			} 
