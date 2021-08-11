@@ -13,27 +13,28 @@
               <strong>Site:</strong>{lSiteID}
             </p>
 
-            <h2 dir='ltr'>Position Description Title: {{ PositionDescriptionTitle }}</h2>
-            <h2 dir='ltr'>Version Number: {{ VersionNumber }}</h2>
-            {{ #posDetails }}
+            <h2 dir='ltr'>Position Description Title: {{PositionDescriptionTitle}}</h2>
+            <h2 dir='ltr'>Version Number: {{VersionNumber}}</h2>
+            {{#posDetails}}
               <h2 dir='ltr'>Position:</h2>
               <ul>
-                <li><strong>Title: </strong> ~!title!~</li>
-                <li><strong>Full-time equivalent: </strong>~!positionProperties.fte!~</li>
-                <li><strong>Seniority: </strong>~!positionProperties.seniority!~</li>
-                <li><strong>Brand Name: </strong>~!positionProperties.brand Name!~</li>
-                <li><strong>Department Name: </strong>~!positionProperties.department Name!~</li>
+                <li><strong>Title: </strong> {{title}}</li>
+                <li><strong>Full-time equivalent: </strong>{{fte}}</li>
+                <li><strong>Seniority: </strong>{{seniority}}</li>
+                <li><strong>Brand Name: </strong>{{brandName}}</li>
+                <li><strong>Department Name: </strong>{{departmentName}}</li>
               </ul>
-            {{ /posDetails }}
-            {{ #capabilities }}
+            {{/posDetails}}
+            {{#capabilities}}
               <h2 dir='ltr'>Capability:</h2>
               <ul>
-                <li><strong>Name: </strong> ~!capabilityName!~</li>
-                <li><strong>Requirement Level: </strong>~!requirementLevel!~</li>
+                <li><strong>Name: </strong> {{capabilityName}}</li>
+                <li><strong>Requirement Level: </strong>{{requirementLevel}}</li>
+                <li><strong>Difficulty: </strong>{{difficulty}}</li>
               </ul>
-            {{ /capabilities }}
+            {{/capabilities}}
              <p dir='ltr'>
-              <strong>Physical Option:</strong> {{ physicalOption }}<br />
+              <strong>Physical Option:</strong> {{physicalOption}}<br />
             </p>
         ";
       }
@@ -51,25 +52,25 @@
 
             <h2 dir='ltr'>Position Description Title: {{ PositionDescriptionTitle }}</h2>
             <h2 dir='ltr'>Version Number: {{ VersionNumber }}</h2>
-            {{ #FlexibleData.posGroup.posDetails }}
+            {{#FlexibleData.posGroup.posDetails}}
               <h2 dir='ltr'>Position:</h2>
               <ul>
                 <li><strong>Title: </strong>{{ title }}</li>
-                <li><strong>Full-time equivalent: </strong>{{ positionProperties.fte }}</li>
+                <li><strong>Full-time equivalent: </strong>{{positionProperties.fte}}</li>
                 <li><strong>Seniority: </strong>{{positionProperties.seniority}}</li>
                 <li><strong>Brand Name: </strong>{{positionProperties.brand Name}}</li>
                 <li><strong>Department Name: </strong>{{positionProperties.department Name}}</li>
               </ul>
-            {{ /FlexibleData.posGroup.posDetails }}
-            {{ #FlexibleData.capabilityGroup.capabilities }}
+            {{/FlexibleData.posGroup.posDetails}}
+            {{#FlexibleData.capabilityGroup.capabilities}}
               <h2 dir='ltr'>Capability:</h2>
               <ul>
                 <li><strong>Name: </strong> {{capabilityName}}</li>
                 <li><strong>Requirement Level: </strong>{{requirementLevel}}</li>
               </ul>
-            {{ /FlexibleData.capabilityGroup.capabilities }}
+            {{/FlexibleData.capabilityGroup.capabilities}}
             <p dir='ltr'>
-              <strong>Physical Option:</strong> {{ FlexibleData.physicalDemands.physicalOption }}<br />
+              <strong>Physical Option:</strong> {{FlexibleData.physicalDemands.physicalOption}}<br />
             </p>
         ";
       }

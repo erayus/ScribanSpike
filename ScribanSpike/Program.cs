@@ -31,40 +31,53 @@ namespace ScribanSpike
 				RequestId = new Guid("b61e3e2f-22b9-4b7b-9f20-2c083fc75f57")
 			};
 			var publicPDJObject = JObject.Parse(JsonConvert.SerializeObject(publicPD));
-			
+			var templateText = Helper.GetTemplate();
+
 			//Pre-process
 			//Match everything between double curly braces
-			string pattern = @"(?<={{|{{ |{{ [#\/])(?:[a-zA-Z]*?)(?=}}| }})";//@"(?<={{)\s?#?\/?\s?(.*?)\s?(?=}})";
+			string pattern = @"(?<={{|{{[#\/])(?:[a-zA-Z\d]*?)(?=}})";//@"(?<={{)\s?#?\/?\s?(.*?)\s?(?=}})";
 			Regex rgx = new Regex(pattern);
-			var templateText = Helper.GetTemplate();
 			
 			// Loop through each token
 			foreach (Match matchToken in rgx.Matches(templateText))
 			{
 				var givenToken =  matchToken.Value;
-				// Console.WriteLine(givenToken);
-			
 				var fullTokenPathList = publicPDJObject.FindTokens(givenToken);
-				
-				if (fullTokenPathList.Count > 1)
+
+				if (fullTokenPathList.Count == 0)
 				{
-					Console.WriteLine("Not yet consider");
+					Console.WriteLine($"{givenToken} is not found.");
+					continue;
 				}
+				// if (fullTokenPathList.Count > 1)
+				// {
+				// 	//Same parent path
+				// 	Console.WriteLine("Not yet consider: " + JsonConvert.SerializeObject(fullTokenPathList) );
+				// }
+				
 				var fullTokenPath = fullTokenPathList[0].Path;
-				templateText = Regex.Replace(templateText, @"(?<={{|{{ |{{ [#\/])(?:"+ givenToken + @")(?=}}| }})",fullTokenPath);
-				templateText = Regex.Replace(templateText, @"~!", "{{");
-				templateText = Regex.Replace(templateText, @"!~", "}}");
+				Regex rgex = new Regex(@"(.*)\[\d\].(.*)");
+				if (rgex.IsMatch(fullTokenPath))
+				{
+					foreach (Match match in rgex.Matches(fullTokenPath))
+					{
+						fullTokenPath = match.Groups[2].Value;
+					}
+				}
+				templateText = Regex.Replace(templateText, @"(?<={{|{{|{{[#\/]|{{[#\/])(?:"+ givenToken + @")(?=}}|}})",fullTokenPath);
+				// templateText = Regex.Replace(templateText, @"~!", "{{");
+				// templateText = Regex.Replace(templateText, @"!~", "}}");
 			}
-			Console.WriteLine(templateText);
+			// Console.WriteLine(templateText);
 
 			var stubble = new StubbleBuilder()
 				.Build();
-
+			
 			var renderSettings = new RenderSettings
 			{
 				ThrowOnDataMiss = true
 			};
-
+			
 			try
 			{
 				var result = stubble.Render(
@@ -77,15 +90,15 @@ namespace ScribanSpike
 			}
 			catch (StubbleDataMissException e)
 			{
-				Console.WriteLine(e.Message);
-				// field not found
-				// save to link table
+				Console.WriteLine( e.Message.Replace("undefined", "not found."));
+				// Case: field not found 
+				// save error message (user friendly) to link table
 			}
 			catch (StubbleException e)
 			{
 				Console.WriteLine(e.Message);
-				// open and closing tag mismatch
-				// pre-process message to be a bit more friendly, check all tags, can't tell specific
+				// Cases: open and closing tag mismatch,...
+				// pre-process message to be a bit more friendly (e.g there is something wrong, it could be open and closing tags are not matched.
 				// save to link table
 			}
 			catch (Exception e)
@@ -98,7 +111,7 @@ namespace ScribanSpike
 		
 		static JObject getFlexibleData()
 		{
-			var json = File.ReadAllText(@"C:\code\ScribanSpike\ScribanSpike\flexibleData.json");
+			var json = File.ReadAllText(@"C:\workspace\ScribanSpike\ScribanSpike\flexibleData.json");
 			// var json = "{ \"posGroup\": { \"posDetails\": [{ \"id\": \"15508d98-9430-6c19-21fe-df79910c5ff6\", \"title\": \"Receptionist\", \"externalId\": \"185522\", \"viewableReference\": \"B39855\", \"positionProperties\": { \"fte\": \"Temporary\", \"seniority\": \"Entry Level\", \"brand Name\": \"Abc corp\", \"department Name\": \"Product\" } }] }, \"dutiesGroup\": { \"duties\": [{ \"dutyType\": \"Essential\", \"dutyDescription\": \"some duty\", \"percentageAllocation\": 25 }, { \"dutyType\": \"Essential\", \"dutyDescription\": \"some duty\", \"percentageAllocation\": 25 }] }, \"capabilityGroup\": { \"capabilities\": [{ \"capabilityName\": \"Software\", \"requirementLevel\": \"Mandatory\" }] }, \"physicalDemands\": { \"physicalOption\": false }, \"positionDetails\": { \"salary\": 100000, \"classification\": \"Professional\", \"skillsKnowledge\": \"skills\" }, \"backgroundChecks\": { }, \"fundingSourcesGroup\": { \"fundingSources\": [{ \"glNumber\": \"10-00-7-15000-6210\", \"percentageDistribution\": 25 }] }, \"decisionMakingSection\": { } }";
 			return JObject.Parse(json);
 		}

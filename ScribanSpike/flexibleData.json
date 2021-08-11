@@ -9,8 +9,8 @@
         "positionProperties": {
           "fte": "Temporary",
           "seniority": "Entry Level",
-          "brand Name": "Abc corp",
-          "department Name": "Product"
+          "brandName": "Abc corp",
+          "departmentName": "Product"
         }
       }
     ]
@@ -33,11 +33,17 @@
     "capabilities": [
       {
         "capabilityName": "Software",
-        "requirementLevel": "Mandatory"
+        "requirementLevel": "Mandatory",
+        "details" : {
+          "difficulty": "hard"
+        }
       },
       {
         "capabilityName": "Hardware",
-        "requirementLevel": "Optional"
+        "requirementLevel": "Optional",
+        "details" : {
+          "difficulty": "easy"
+        }
       }
     ]
   },
